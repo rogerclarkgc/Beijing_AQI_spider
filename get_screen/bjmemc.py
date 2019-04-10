@@ -58,8 +58,14 @@ class Screenshotbjmemc(object):
 if __name__ == "__main__":
 
     base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp="
-    sel = selector.PM10
+    point_list = selector.POINT_LIST
+    names_list = ["{}-2.png".format(str(i)) for i in range(1, 35)]
     bj = Screenshotbjmemc(base_url=base_url)
-    bj.switchFrameButton(sel, wait=5)
-    bj.captureScreen("pm10.png")
+    for (index, sel) in enumerate(point_list):
+        bj.switchFrameButton(sel)
+        bj.captureScreen(names_list[index])
+        bj.driver.refresh()
+        time.sleep(5)
+        print(sel)
+
     bj.closeDriver()

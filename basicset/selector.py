@@ -19,3 +19,8 @@ PULLUTANTS = {'AQI': AQI,
 test1 = "#t_overlaysDiv > div:nth-child(30) > div > div > img"
 test2 = "#t_overlaysDiv > div:nth-child(35) > div > div > img"
 test3 = "#t_overlaysDiv > div:nth-child(36) > div > div > img"
+
+# define 34 air station points here
+
+POINT_FRONT = "#t_overlaysDiv > div:nth-child"
+POINT_LIST = [POINT_FRONT + "({})".format(str(i)) for i in range(2, 36)]
