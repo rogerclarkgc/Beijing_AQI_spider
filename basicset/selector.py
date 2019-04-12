@@ -19,6 +19,7 @@ PULLUTANTS = {'AQI': AQI,
 test1 = "#t_overlaysDiv > div:nth-child(30) > div > div > img"
 test2 = "#t_overlaysDiv > div:nth-child(35) > div > div > img"
 test3 = "#t_overlaysDiv > div:nth-child(36) > div > div > img"
+#t_overlaysDiv > div:nth-child(2) > div > div > img
 
 # define 34 air station points here
 

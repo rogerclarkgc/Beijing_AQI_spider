@@ -50,6 +50,14 @@ class Screenshotbjmemc(object):
 
         self.driver.get_screenshot_as_file(filename)
 
+    def setZoom(self, up=True, val=10, wait=5):
+        self.driver.execute_script("map.setZoom({})".format(str(val)))
+        time.sleep(5)
+
+    def refreshDriver(self, wait=5):
+        self.driver.refresh()
+        time.sleep(5)
+
     def closeDriver(self):
 
         self.driver.close()
@@ -57,15 +65,28 @@ class Screenshotbjmemc(object):
 
 if __name__ == "__main__":
 
-    base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp="
+    base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp=1555030832581"
+    #point_list = [selector.POINT_LIST[i] for i in [0, 18, 20]]
+    #names_list = ["{}-3.png".format(str(i)) for i in [0, 18, 20]]
     point_list = selector.POINT_LIST
-    names_list = ["{}-2.png".format(str(i)) for i in range(1, 35)]
+    pollutants = selector.PULLUTANTS
+    #names_list = ["{}-4.png".format(str(i)) for i in range(0, 35)]
+    special_point = [0, 18, 20]
     bj = Screenshotbjmemc(base_url=base_url)
-    for (index, sel) in enumerate(point_list):
-        bj.switchFrameButton(sel)
-        bj.captureScreen(names_list[index])
-        bj.driver.refresh()
-        time.sleep(5)
-        print(sel)
+
+    for pollutant, selector in pollutants.items():
+        names_list = ["test-{}-{}.png".format(pollutant, str(i)) for i in range(1, 35)]
+        print("switch to {}".format(pollutant))
+        for index, point in enumerate(point_list[0:3]):
+            bj.switchFrameButton(selector)
+            if index in special_point:
+                print("find special, set zoom to 10")
+                bj.setZoom()
+            bj.switchFrameButton(point)
+            bj.captureScreen(filename=names_list[index])
+            print("capture screen:{}".format(names_list[index]))
+            bj.refreshDriver()
+
+
 
     bj.closeDriver()
