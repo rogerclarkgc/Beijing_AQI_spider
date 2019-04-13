@@ -57,3 +57,9 @@ my ip, that's a risk
 
 2. how to connect and transport the params of the screenshot task, each task has different 
 task parameters.
+
+
+## 2019-4-13
+
+write a multi threading model, when a sub thread is called by main thread, a `time.sleep(seconds)`
+is called to prevent two much connect request to the bjmemc server

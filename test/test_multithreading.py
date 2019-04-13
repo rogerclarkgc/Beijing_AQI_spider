@@ -2,7 +2,7 @@ import time
 import random
 import threading
 
-from basicset.selector import (POINT_LIST, PULLUTANTS)
+from basicset.selector import (POINT_LIST, POLLUTANTS)
 from get_screen import bjmemc
 
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp=1555030832581"
     thread_list = [MultiThreadingTask(selector=value[1],
                                       base_url=base_url,
-                                      filename="{}.png".format(value[0])) for value in PULLUTANTS.items()]
+                                      filename="{}.png".format(value[0])) for value in POLLUTANTS.items()]
 
     for thread in thread_list:
         thread.start()

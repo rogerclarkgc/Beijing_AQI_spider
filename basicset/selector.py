@@ -8,7 +8,7 @@ O3 = "body > div.btns > ul > li:nth-child(5) > a"
 CO = "body > div.btns > ul > li:nth-child(6) > a"
 PM10 = "body > div.btns > ul > li:nth-child(7) > a"
 
-PULLUTANTS = {'AQI': AQI,
+POLLUTANTS = {'AQI': AQI,
              'PM25': PM25,
              'SO2': SO2,
              'NO2': NO2,
