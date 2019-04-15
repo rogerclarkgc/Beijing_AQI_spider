@@ -63,3 +63,12 @@ task parameters.
 
 write a multi threading model, when a sub thread is called by main thread, a `time.sleep(seconds)`
 is called to prevent two much connect request to the bjmemc server
+
+## 2019-4-15
+
+i've found it's difficult to use the tesseract to recognize the characters in the screenshot (results unstable, too much 
+parameters to handle)
+
+so i decided to use old school html parser method (base on bs4) to screen data from the page, it works well. but this 
+
+method may still cost a lot of time in the long-term maintenance.

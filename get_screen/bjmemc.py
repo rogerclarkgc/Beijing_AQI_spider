@@ -50,6 +50,16 @@ class Screenshotbjmemc(object):
 
         self.driver.get_screenshot_as_file(filename)
 
+    def getPageSource(self, filename=None, save=False):
+
+        page = self.driver.page_source
+        if save:
+            print('writing page source in file:{}'.format(filename))
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(page)
+        else:
+            return page
+
     def setZoom(self, up=True, val=10, wait=5):
         self.driver.execute_script("map.setZoom({})".format(str(val)))
         time.sleep(5)
