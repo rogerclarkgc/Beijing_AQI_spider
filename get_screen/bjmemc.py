@@ -5,11 +5,12 @@ import time
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import  ActionChains
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common import exceptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 
 from basicset import selector
 
@@ -18,6 +19,10 @@ class Screenshotbjmemc(object):
     def __init__(self, base_url, wait=20, retry=3):
 
         print("Initiating Chromedriver...")
+        #chrome_options = Options()
+        #chrome_options.add_argument('window-size=1920x1080')
+        #chrome_options.add_argument('--headless')
+        #chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome()
         self.driver.maximize_window()
         self.retry = retry
