@@ -1,0 +1,17 @@
+WEBDRIVER:
+ resolution: 1920x1080 # The resolution of the webdriver
+ headless: True # run the webdriver in the headless mode
+ refresh_wait: 5 # the wait time after each page refresh
+ initial_wait: 20 # the wait time for page loading
+ switch_wait: 3 # the wait time for switch between buttun elements in page
+ zoom_wait: 3 # the wait time for zooming
+ retry: 5 # retry counts for the failure of loading page
+
+Task:
+ # The delay time of each sub-process
+ delay_max: 3
+ # The main process is stuck when the sub-process is on-going, should consider it
+ schedule: 22
+
+
+

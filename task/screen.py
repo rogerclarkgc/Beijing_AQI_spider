@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 
 from get_screen.bjmemc import Screenshotbjmemc
 from basicset import selector
+from basicset import spider_config as cfg
 
 
 class AcquirePollutantsData(object):
@@ -22,7 +23,10 @@ class AcquirePollutantsData(object):
         self.base_url = base_url
         self.points = selector.POINT_LIST
         self.frame = selector.POLLUTANTS[pollutant]
-        self.bjmemc = Screenshotbjmemc(self.base_url)
+        self.bjmemc = Screenshotbjmemc(base_url=base_url,
+                                       wait=cfg.initial_wait,
+                                       headless=cfg.headless,
+                                       retry=cfg.retry)
         self.needzoom = need_zoom
         self.filename = ["{}-{}.png".format(self.pollutants, str(i))
                          for i in range(1, len(self.points)+1)]
@@ -31,11 +35,11 @@ class AcquirePollutantsData(object):
 
         print("Acquire Data from {} frame".format(self.pollutants))
         for index, point in enumerate(self.points):
-            self.bjmemc.switchFrameButton(self.frame, wait=3)
+            self.bjmemc.switchFrameButton(self.frame, wait=cfg.switch_wait)
             if index in self.needzoom:
                 print("find special points, set zoom level to 10")
-                self.bjmemc.setZoom(wait=3)
-            self.bjmemc.switchFrameButton(point, wait=3)
+                self.bjmemc.setZoom(wait=cfg.zoom_wait)
+            self.bjmemc.switchFrameButton(point, wait=cfg.switch_wait)
             self.bjmemc.captureScreen(filename=self.filename[index])
             print("capture screen:{}".format(self.filename[index]))
             self.bjmemc.refreshDriver()
@@ -45,11 +49,11 @@ class AcquirePollutantsData(object):
         print("Acquire Data from {} frame".format(self.pollutants))
         datalist = []
         for index, point in enumerate(self.points):
-            self.bjmemc.switchFrameButton(self.frame, wait=2)
+            self.bjmemc.switchFrameButton(self.frame, wait=cfg.switch_wait)
             if index in self.needzoom:
                 print("find special points, set zoom level to 10")
-                self.bjmemc.setZoom(wait=2)
-            self.bjmemc.switchFrameButton(point, wait=2)
+                self.bjmemc.setZoom(wait=cfg.zoom_wait)
+            self.bjmemc.switchFrameButton(point, wait=cfg.switch_wait)
             page = self.bjmemc.getPageSource()
             soup = BeautifulSoup(page, 'lxml')
             if self.pollutants=="AQI":
@@ -58,7 +62,7 @@ class AcquirePollutantsData(object):
                 data = self.get_data_pollutant(soup=soup)
             print(data)
             datalist.append(data)
-            self.bjmemc.refreshDriver(wait=3)
+            self.bjmemc.refreshDriver(wait=cfg.refresh_wait)
         return datalist
 
     def get_data_aqi(self, soup):
@@ -98,7 +102,7 @@ class AcquirePollutantsData(object):
     def get_acquire_time(self):
 
         ts = time.localtime(time.time())
-        acquire_time = time.strftime("%Y-%m-%d %H:%M", ts)
+        acquire_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", ts)
         return acquire_time
 
     def parse_location(self, soup):
@@ -120,8 +124,12 @@ class AcquirePollutantsData(object):
         else:
             res = find[0].text
             res = ''.join(re.findall(r'\d', res))
-            datatime = time.strptime(res, "%Y%m%d%H%M")
-            datatimestr = time.strftime("%Y-%m-%d %H:%M", datatime)
+            if res:
+                datatime = time.strptime(res, "%Y%m%d%H%M")
+            else:
+                print('can not find data update time')
+                datatime = "None"
+            datatimestr = time.strftime("%Y-%m-%dT%H:%M:%SZ", datatime)
         return datatimestr
 
     def parse_aqi(self, soup):
@@ -184,7 +192,7 @@ if __name__ == "__main__":
                                  need_zoom=[0,18, 20])
     datalist = task.get_data_by_source()
     from task.data import DataHandler
-    dh = DataHandler(datalist)
+    dh = DataHandler()
     dh.connect_database(database='test', collection='air')
-    dh.add_in_database()
+    dh.add_in_database(datalist)
     task.close_task()

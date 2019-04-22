@@ -13,18 +13,23 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 from basicset import selector
+from basicset import spider_config as cfg
+
 
 class Screenshotbjmemc(object):
 
-    def __init__(self, base_url, wait=20, retry=3):
+    def __init__(self, base_url, headless, wait=20, retry=3):
 
-        print("Initiating Chromedriver...")
-        #chrome_options = Options()
-        #chrome_options.add_argument('window-size=1920x1080')
-        #chrome_options.add_argument('--headless')
-        #chrome_options.add_argument('--disable-gpu')
-        self.driver = webdriver.Chrome()
-        self.driver.maximize_window()
+        if headless:
+            print("Initiate chromedriver in headless mode...")
+            chrome_options = Options()
+            chrome_options.add_argument('window-size={}'.format(cfg.resolution))
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--disable-gpu')
+            self.driver = webdriver.Chrome(chrome_options=chrome_options)
+        else:
+            self.driver = webdriver.Chrome()
+            self.driver.maximize_window()
         self.retry = retry
         while self.retry > 0:
             try:
@@ -34,7 +39,7 @@ class Screenshotbjmemc(object):
             except exceptions.TimeoutException:
                 print("Failed to load the page, retry in 5 seconds...")
                 self.retry -= 1
-                time.sleep(5)
+                time.sleep(10)
         if self.retry <= 0:
             raise RuntimeError("Spider has reached the max retry times, page get failed.")
 
@@ -67,7 +72,7 @@ class Screenshotbjmemc(object):
 
     def setZoom(self, up=True, val=10, wait=5):
         self.driver.execute_script("map.setZoom({})".format(str(val)))
-        time.sleep(5)
+        time.sleep(wait)
 
     def refreshDriver(self, wait=5):
         self.driver.refresh()
@@ -84,7 +89,7 @@ if __name__ == "__main__":
     #point_list = [selector.POINT_LIST[i] for i in [0, 18, 20]]
     #names_list = ["{}-3.png".format(str(i)) for i in [0, 18, 20]]
     point_list = selector.POINT_LIST
-    pollutants = selector.PULLUTANTS
+    pollutants = selector.POLLUTANTS
     #names_list = ["{}-4.png".format(str(i)) for i in range(0, 35)]
     special_point = [0, 18, 20]
     bj = Screenshotbjmemc(base_url=base_url)

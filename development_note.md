@@ -72,3 +72,16 @@ parameters to handle)
 so i decided to use old school html parser method (base on bs4) to screen data from the page, it works well. but this 
 
 method may still cost a lot of time in the long-term maintenance.
+
+## 2019-4-18
+
+work for data module now, use monogo database to store the air data.
+
+## 2019-4-19
+
+try to use celery to run the spider every 30 minutes, unknown bugs had
+encountered, don't know how to fix it. 
+
+## 2019-4-20-2019-4-22
+use a lightweight schedule module to replace celery, run the stable test,
+and add more function in the `DataDrawer` module

@@ -54,9 +54,9 @@ def runAcquireTask(base_url, pollutant, need_zoom, database, max_delay=5):
 
 if __name__ == "__main__":
 
-    base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp=1555138830130"
+    base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp=1555663766187"
     need_zoom = [0,18, 20]
-    task = ['AQI', "NO2", "PM25", "PM10", "CO", "SO2", "O3"]
+    task = ['AQI',"NO2", "PM25", "PM10", "CO", "SO2", "O3"]
     login = {'database':'test',
              'collection':'air',
              'host':None,
@@ -66,6 +66,6 @@ if __name__ == "__main__":
     runAcquireTask(base_url=base_url,
             pollutant=task,
             need_zoom=need_zoom,
-            max_delay=2,
+            max_delay=3,
             database=login)
     print('Current time: {}'.format(time.ctime()))
