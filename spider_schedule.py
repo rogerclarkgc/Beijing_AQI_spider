@@ -20,7 +20,8 @@ def job_fetch():
     runAcquireTask(base_url=base_url,
             pollutant=task,
             need_zoom=need_zoom,
-            max_delay=3,
+            max_delay=cfg.delay_max,
+            min_delay=cfg.delay_min,
             database=login)
     print('Current time: {}'.format(time.ctime()))
 

@@ -10,8 +10,8 @@ from ggplot import *
 
 from matplotlib import pyplot as plt
 
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
-plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+plt.rcParams['font.sans-serif'] = ['SimHei']  # load a chinese supported font
+plt.rcParams['axes.unicode_minus'] = False   # support minus in chinese
 
 """
 This module will try to store the data in a mongo database,
@@ -184,10 +184,10 @@ class DataDrawer(object):
         dataframe = dataframe.dropna(axis=axis)
         return dataframe
 
-    def wash_data(self, datalist, aqi=False):
+    def wash_data(self, datalist, dup, aqi=False):
 
         df = self.to_dataframe(datalist)
-        df = self.remove_duplicate(df, subset='data_time')
+        df = self.remove_duplicate(df, subset=dup)
         if aqi:
             df = self.to_numeric(df, subset=['AQI'])
         else:
@@ -221,14 +221,58 @@ class DataDrawer(object):
         fig = fig + xlab(xlb) + ylab(ylb2) + labs(title=maintitle)
         return fig
 
+def air_report(database, collection, date, pollutants,
+               host=None, username=None, passwd=None):
 
-    def air_report(self):
-        pass
+        drawer = DataDrawer(database=database,
+                            collection=collection,
+                            host=host,
+                            username=username,
+                            passwd=passwd)
+        savesucc = {'filename':[],
+                    'figlist':{}}
+        unit = {'AQI': '',
+                'IAQI': '',
+                'PM25': 'mcg/m^3',
+                'PM10': 'mcg/m^3',
+                'SO2': 'mcg/m^3',
+                'NO2': 'mcg/m^3',
+                'O3': 'mcg/m^3',
+                'CO': 'mg/m^3'}
+        for pollutant in pollutants:
+            datalist = drawer.select_data(location='',
+                                          pollutant=pollutant,
+                                          period=date)
+            df = drawer.wash_data(datalist, aqi=pollutant=='AQI', dup=['location', 'data_time'])
+            grp_loc = df.groupby(df['location'], as_index=False)
+            grp_time = df.groupby(df['data_time'], as_index=False)
+            loc_mean, time_mean = grp_loc.mean(), grp_time.mean()
+
+            mtitle_loc = '24h average for all location-' + pollutant
+            mtitle_time = "34 locations' average value in 24h-" + pollutant
+            fig_time = ggplot(aes(x='data_time',y='concentration' if pollutant!='AQI' else 'AQI'),data=time_mean) + \
+                       geom_line()
+            fig_time = fig_time + \
+                       labs(title=mtitle_time) + \
+                       xlab(pollutant) + \
+                       ylab(unit[pollutant])
+            savesucc['figlist'][pollutant] = fig_time
+            try:
+                fop = '{}-24hmean.png'.format(pollutant)
+                fig_time.save(filename="./report/{}".format(fop),
+                              width=8,
+                              height=6,
+                              dpi=300)
+                savesucc['filename'].append(fop)
+            except (FileNotFoundError):
+                print('cannot find report directory, skip')
+        return savesucc
+
 
 
 if __name__=='__main__':
     dd = DataDrawer('test', 'air')
     res = dd.select_data('永定门','SO2','2019-04-21')
-    df = dd.wash_data(res,aqi=False)
+    df = dd.wash_data(res,aqi=False,dup='data_time')
     fig = dd.draw_line(df,aqi=False)
     print(fig)

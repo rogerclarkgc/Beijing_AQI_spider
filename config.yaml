@@ -6,12 +6,14 @@ WEBDRIVER:
  switch_wait: 3 # the wait time for switch between buttun elements in page
  zoom_wait: 3 # the wait time for zooming
  retry: 5 # retry counts for the failure of loading page
-
+ ua: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36
+ load_image: False
 Task:
  # The delay time of each sub-process
- delay_max: 3
+ delay_max: 5
+ delay_min: 3
  # The main process is stuck when the sub-process is on-going, should consider it
- schedule: 22
+ schedule: 23
 
 
 

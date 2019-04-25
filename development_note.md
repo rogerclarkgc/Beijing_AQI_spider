@@ -85,3 +85,41 @@ encountered, don't know how to fix it.
 ## 2019-4-20-2019-4-22
 use a lightweight schedule module to replace celery, run the stable test,
 and add more function in the `DataDrawer` module
+
+## 2019-4-24
+shit happens, it seems that when i ran the chomedriver in a headless mode, 
+the response from the bjmemc server became unstable and slow, some necessary html element
+fetch from the website is missing. so i cant't parser correct air pollutants data from
+the website.
+
+but when i ran the dirver in the normal mode, all the things are fast and happy.
+
+        C:\Users\dell\AppData\Local\Programs\Python\Python36\python.exe E:/python/spider_airpollutants/task/multithreading.py
+        Current time: Wed Apr 24 15:53:32 2019
+        thread: task-AQI start at Wed Apr 24 15:53:32 2019
+        Initiate chromedriver in headless mode...
+        # after 5 minutes, the page loading complete, it's werid
+        Acquire Data from AQI frame
+        find special points, set zoom level to 10
+        can not find class attribute: show_name
+        can not find class attribute: show_aqi
+        can not find class attribute: show_zk
+        can not find class attribute: show_sw
+        # multiple element missing in the html source
+        {'location': 'NONE', 'AQI': 'NONE', 'air_quality': 'NONE', 'primary_pollutants': 'NONE', 'data_time': '2019-04-24T15:00:00Z', 'type': 'AQI', 'acquire_time': '2019-04-24T15:54:30Z'}
+        
+        Process finished with exit code 1
+        
+by the way, this shit happens also happens when i test `driver.get('http://www.baidu.com')`
+the loading time is longer than normal mode (not sure)
+
+## 2019-4-25
+
+try to use fiddle to monitor what happens in my chrome driver
+but the headless-chromedriver works as well as last week, i
+can't reproduce that slow response shits now.
+
+after test, i've found  the delay between each monitoring site is 
+12 seconds for both running mode (headless or normal), whatever i use normal chrome driver or headless chrome dirver
+the initial loading time of bjmemc is 24 seconds
+

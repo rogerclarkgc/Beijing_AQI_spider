@@ -34,7 +34,7 @@ class AcquireTask(threading.Thread):
 
 
 
-def runAcquireTask(base_url, pollutant, need_zoom, database, max_delay=5):
+def runAcquireTask(base_url, pollutant, need_zoom, database, min_delay,max_delay=5):
 
     thread_list = [AcquireTask(pollutant = p,
                                base_url=base_url,
@@ -42,7 +42,7 @@ def runAcquireTask(base_url, pollutant, need_zoom, database, max_delay=5):
                                database=database) for p in pollutant]
     for thread in thread_list:
         thread.start()
-        time.sleep(random.randint(1, max_delay))
+        time.sleep(random.randint(min_delay, max_delay))
 
     for thread in thread_list:
         thread.join()
@@ -56,7 +56,8 @@ if __name__ == "__main__":
 
     base_url = "http://zx.bjmemc.com.cn/getAqiList.shtml?timestamp=1555663766187"
     need_zoom = [0,18, 20]
-    task = ['AQI',"NO2", "PM25", "PM10", "CO", "SO2", "O3"]
+    task = ['AQI']
+            #"NO2", "PM25", "PM10", "CO", "SO2", "O3"]
     login = {'database':'test',
              'collection':'air',
              'host':None,
@@ -67,5 +68,6 @@ if __name__ == "__main__":
             pollutant=task,
             need_zoom=need_zoom,
             max_delay=3,
+            min_delay=2,
             database=login)
     print('Current time: {}'.format(time.ctime()))

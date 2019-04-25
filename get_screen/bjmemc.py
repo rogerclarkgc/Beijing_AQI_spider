@@ -20,15 +20,25 @@ class Screenshotbjmemc(object):
 
     def __init__(self, base_url, headless, wait=20, retry=3):
 
+        chrome_options = Options()
+        if cfg.load_image:
+            print("Chromedriver will not load image beacause cfg.load_image==False")
+            prefs = {'profile.default_content_setting_values': {'images': 2}}
+            chrome_options.add_experimental_option('prefs', prefs)
         if headless:
             print("Initiate chromedriver in headless mode...")
-            chrome_options = Options()
             chrome_options.add_argument('window-size={}'.format(cfg.resolution))
             chrome_options.add_argument('--headless')
             chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('user-agent={}'.format(cfg.ua))
+
             self.driver = webdriver.Chrome(chrome_options=chrome_options)
+            #self.driver.maximize_window()
         else:
-            self.driver = webdriver.Chrome()
+            #chrome_options = Options()
+            #prefs = {'profile.default_content_setting_values':{'images':2}}
+            #chrome_options.add_experimental_option('prefs', prefs)
+            self.driver = webdriver.Chrome(chrome_options=chrome_options)
             self.driver.maximize_window()
         self.retry = retry
         while self.retry > 0:
@@ -74,9 +84,19 @@ class Screenshotbjmemc(object):
         self.driver.execute_script("map.setZoom({})".format(str(val)))
         time.sleep(wait)
 
-    def refreshDriver(self, wait=5):
-        self.driver.refresh()
-        time.sleep(5)
+    def refreshDriver(self, wait=5, retry=5):
+        retry_t = retry
+        while retry_t >0:
+            try:
+                self.driver.refresh()
+                time.sleep(5)
+                break
+            except exceptions.TimeoutException:
+                print('refreshDriver: time out failure, retry in 10 sec')
+                time.sleep(10)
+                retry_t = retry_t - 1
+        if retry_t <= 0:
+            raise RuntimeError('refreshDriver: reached the max retry times, quit thread')
 
     def closeDriver(self):
 
